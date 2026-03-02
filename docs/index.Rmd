@@ -1,0 +1,123 @@
+---
+title: "Meat"
+author: "Nora Stanley"
+date: "2026-03-01"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(knitr)
+library(ggplot2)
+library(plotly)
+library(ggpubr)
+library(leaflet)
+library(tinytable)
+library(ggthemes)
+```
+
+## Meat Production graph
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+url<-read.csv('https://ourworldindata.org/grapher/meat-production-tonnes.csv?v=1&csvType=full&useColumnShortNames=true')
+meat_production<-url
+
+meat_prod_filter<-meat_production%>%
+  filter(entity %in% c('United States','Canada','China','France','Germany','Brazil'))
+
+ggplot(meat_prod_filter,
+       aes(x=year,
+           y=meat__total__00001765__production__005510__tonnes,
+           color=entity))+
+  geom_path(size=0.75)+
+  theme_tufte()+
+  labs(Title="The Origin Story",
+       x="Year",
+       y="Meat Production (Tonnes)",
+       color="Country")
+
+```
+
+
+## Food Systems and Emmissions
+
+```{r}
+url<-read.csv('https://ourworldindata.org/grapher/emissions-from-food.csv?v=1&csvType=full&useColumnShortNames=true')
+food_carbon<-url
+food_carbon_filter<-food_carbon%>%
+  filter(entity %in% c('United States','Canada','India','China','France','Germany','Brazil'))%>%
+  filter(year == 2015)%>%
+  mutate(entity=factor(entity,
+                       levels=c("China","United States","Brazil","India","Canada","Germany","France")))
+ggplot(food_carbon_filter,
+       aes(x=entity,
+           y=greenhouse_gas_emissions_from_food))+
+  geom_col(color="black",fill="black",width=0.75)+
+  theme_economist_white()+
+  labs(title="Global Casualty",
+       x="Country",
+       y="Greenhouse Gas Emmissions from Food (")
+```
+
+## Meat Types
+
+```{r}
+url<-read.csv('https://ourworldindata.org/grapher/per-capita-meat-consumption-by-type-kilograms-per-year.csv?v=1&csvType=full&useColumnShortNames=true')
+meat_types<-url
+meat_types_filter<-meat_types%>%
+    rename(other = meat__other__00002735__food_available_for_consumption__0645pc__kilograms_per_year_per_capita,
+         sheep_goat = meat__sheep_and_goat__00002732__food_available_for_consumption__0645pc__kilograms_per_year_per_capita,
+         beef_buffalo = meat__beef_and_buffalo__00002731__food_available_for_consumption__0645pc__kilograms_per_year_per_capita,
+         pig = meat__pig__00002733__food_available_for_consumption__0645pc__kilograms_per_year_per_capita,
+         poultry = meat__poultry__00002734__food_available_for_consumption__0645pc__kilograms_per_year_per_capita)%>%
+  pivot_longer(cols = other:poultry,
+               names_to = "meat_type",
+               values_to = "kg_py_pc")%>%
+  filter(entity %in% c("Brazil","United States","China"))%>%
+  filter(year == 2023)
+beef_other<-meat_types_filter%>%
+  mutate(meat_type=ifelse(meat_type == "beef_buffalo",
+                          "beef/buffalo",
+                          "other"))%>%
+  mutate(entity=factor(entity,
+         levels=c("Brazil","United States","China")))
+
+ggplot(beef_other,
+       aes(x=entity,
+           y=kg_py_pc,
+           fill=meat_type))+
+  geom_col(position="fill",width=0.85)+
+  coord_flip()+
+  scale_y_continuous(labels = scales::percent)+
+  scale_fill_manual(values=c(
+    "beef/buffalo"="red",
+    "other"="black"
+  ))+
+  theme_base()
+```
+
+
+# Death Rate from CVD
+
+```{r,warning=FALSE}
+url<-read.csv('https://ourworldindata.org/grapher/cardiovascular-disease-death-rate-who-mdb.csv?v=1&csvType=full&useColumnShortNames=true')
+cvd_death<-url
+cvd_death_filter<-cvd_death%>%
+  filter(entity %in% c("China","United States","Brazil","India","Canada","Germany","France"))
+ggplot(cvd_death_filter,
+       aes(x=year,
+           y=age_standardized_death_rate_per_100_000_standard_population__sex_both_sexes__age_group_all_ages__cause_cardiovascular_diseases__icd10_codes_i00_i99,
+           color=entity))+
+  geom_path(size=0.75)+
+  geom_vline(xintercept=1958)+
+  geom_vline(xintercept=1971)+
+  geom_text(x=1958, y=50,label="Invention of Pacemaker", size=3, color="black")+
+  geom_text(x=1971, y=100, label="Invention of MRI and CT Scans", size=3, color="black")+
+  theme_tufte()
+
+```
+
+
