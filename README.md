@@ -1,1 +1,3 @@
 # meat
+With climate change becoming an increasingly pressing issue that requires immediate action, trying to reduce the main contributors to greenhouse gas emissions is imperative. Food systems around the world are unrefined in the context of our climate change journey and are a large contributor to greenhouse gas emissions. Specifically, the meat industry has a large carbon footprint. Combining information from four data sets from Our World in Data, this data story highlights the environmental impact of eating meat and convinces people to reduce their meat consumption. 
+In particular, the data story connects to SDG #11 (Sustainable Cities and Communities), SDG #12 (Responsible Consumption and Production),SDG #2 (Zero Hunger), and SDG #3 (Good Health and Well-Being).
