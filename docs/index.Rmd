@@ -1,7 +1,7 @@
 ---
-title: "Meat"
+title: "The Killer of the Century"
 author: "Nora Stanley"
-date: "2026-03-01"
+date: "2026-03-03"
 output: ioslides_presentation
 ---
 
@@ -20,8 +20,42 @@ library(ggthemes)
 library(patchwork)
 ```
 
+## Introduction
 
-## Meat Production graph
+There are lots of factors contributing to climate change, a problem that if left unresolved could lead to the destruction of the world. This would decrease access to resources for the ever expanding population and increase the death rate which is already affected by many conditions. Despite advances in medicine, there is still a prominence in death by chronic disease. These issues may seem separate; however, there is a culprit influencing both problems.
+
+The criminal is meat, specifically the normalization of current consumption amounts. Not only is meat crippling the healthy hearts of people, it is contributing to the crippling of the environment and world as we know it.
+
+
+## The Origin Story
+
+The increase in population has only increased the demand for meat, encouraging industry meat production as the main source of meat. 
+```{r, warning=FALSE}
+url<-read.csv('https://ourworldindata.org/grapher/meat-production-tonnes.csv?v=1&csvType=full&useColumnShortNames=true')
+meat_production<-url
+
+meat_prod_filter<-meat_production%>%
+  filter(entity %in% c('United States','Canada','China','France','Germany','Brazil'))
+
+plot_1<-ggplot(meat_prod_filter,
+       aes(x=year,
+           y=meat__total__00001765__production__005510__tonnes,
+           color=entity))+
+  geom_path(size=0.75)+
+  theme_tufte()+
+  labs(title="The Origin Story",
+       x="Year",
+       y="Meat Production (Tonnes)",
+       color="Country",
+       subtitle="Meat Production Over Time by Country")
+plot_1
+```
+
+## The Origin Story
+
+Early humans did not have to rely on energy-consumptive processes like transporting animals and feed, deforesting, water usage, and packaging in order to eat meat. The spiked demand for meat has also spurred breeding of livestock, which produce methane as a part of their digestive process. So, increased demand for meat has increased the population of animals that produce methane as a byproduct of digestion.
+
+## Meat Production and Emmissions
 
 ```{r, echo=FALSE, message=FALSE,warning=FALSE}
 url<-read.csv('https://ourworldindata.org/grapher/meat-production-tonnes.csv?v=1&csvType=full&useColumnShortNames=true')
@@ -37,6 +71,7 @@ plot_1<-ggplot(meat_prod_filter,
   geom_path(size=0.75)+
   theme_tufte()+
   labs(title="The Origin Story",
+       subtitle="Meat Production Over Time by Country",
        x="Year",
        y="Meat Production (Tonnes)",
        color="Country")
@@ -59,19 +94,30 @@ plot_2<-ggplot(food_carbon_filter,
   geom_col(color="black",fill="black",width=0.75)+
   theme(axis.title.y=element_text(size=8))+
   labs(title="Global Casualty",
+       subtitle="Greenhouse Gas Emmissions from Food Systems by Country, 2015",
        x="Country",
-       y="Greenhouse Gas Emmissions from Food (Kg CO2/1 Kg Food)")+
+       y="Greenhouse Gas Emmissions (Kg CO2/1 Kg Food)")+
   theme_test()
 
 ```
 
-```{r, fig.width=12, fig.height=4, out.width="100%"}
+<div style="font-size: 22px;">
+This suggests that there’s a correlation between meat production and greenhouse gas emissions from food systems, reinforcing the environmental toll of meat.
+</div>
+
+```{r, fig.width=12, fig.height=6, out.width="100%"}
 print(plot_1|plot_2)
 ```
 
-## Meat Types
+## Meat Production and Emissions
 
-```{r}
+<div style="font-size: 25px;">
+These trends harbour a safe haven for a killer. Our World In Data claims that food production alone is responsible for a quarter of global emissions. Meat production and consumption will play a large role in killing the world if greenhouse gas emissions are not reduced soon. This can only happen if collective effort worldwide occurs with everyone committing to changing their practices.  An easy way anyone can participate is to stop nurturing the culprit. Not everyone has time to reach out to their representatives or keep up with ever-changing policies. However, limiting meat consumption will lessen the demand for meat which could promote the presence of small, local meat farmers that typically have less emissions-heavy practices and incentivize food corporations to invest more in other types of food production.  In fact, even a 50% decrease in meat consumption would reduce the carbon footprint associated with food systems by 31% according to the University of Vermont. Even if halving meat consumption seems daunting, simply limiting or avoiding beef can reduce the carbon footprint related to diet. 
+</div>
+
+## Beef/Buffalo Consumption
+
+```{r, fig.width=8}
 url<-read.csv('https://ourworldindata.org/grapher/per-capita-meat-consumption-by-type-kilograms-per-year.csv?v=1&csvType=full&useColumnShortNames=true')
 meat_types<-url
 meat_types_filter<-meat_types%>%
@@ -103,13 +149,28 @@ ggplot(beef_other,
     "beef/buffalo"="red",
     "other"="black"
   ))+
-  theme_base()
+  theme_base()+
+  labs(x="Country",
+       y="percent of kg meat per year per capita",
+       subtitle="Meat Available for Consumption in 
+Top Meat Consuming Countries, 2023",
+       title="Beef:The Villian",
+fill="Meat Type")
 ```
 
+The three highest meat producers also have high beef and buffalo consumption rates compared to all other meat sources.
 
-# Death Rate from CVD
+## Beef/Buffalo Consumption
 
-```{r,warning=FALSE}
+The USDA notes that 3.3% of all of the United States’ emissions were due to cattle farming, higher than any other single food group, meaning even reductions in beef consumption are meaningful in restraining the power of meat as a global killer. Further, a study performed by Stanford found that replacing beef with chicken or plant-based proteins could reduce the average American’s dietary carbon footprint by 31% and improve nutrition quality by up to 10%. Implementing these types of diets or simply being more conscious of beef consumption could significantly reduce greenhouse gas emissions from meat in the countries with the highest meat consumption. While many factors that contribute to climate change seem complex, meat consumption has a clear path of opportunity to curb this problem and start building a more sustainable world for everyone. Don’t let the killer stay at large.
+
+## Meat and Health
+
+Meat is not only constricting us on the global scale, but it is ruining lives, as well. Prehistorically, meat was an excellent calorie-dense source of protein for early humans. It still can be, but the difference is now we have much more regular access to meat, especially fattier parts of meat. Early humans could only eat meat as much as they catch it, and, today, most people consume meat, often fatty and highly processed, on a daily basis. Now, a once dietary tool for humans is being used as a tool of death. Our bodies have not developed a tolerance to these increased levels of meat consumption.
+
+## Meat and Health
+
+```{r,warning=FALSE,message=FALSE}
 url<-read.csv('https://ourworldindata.org/grapher/cardiovascular-disease-death-rate-who-mdb.csv?v=1&csvType=full&useColumnShortNames=true')
 cvd_death<-url
 cvd_death_filter<-cvd_death%>%
@@ -124,13 +185,23 @@ ggplot(cvd_death_filter,
   geom_text(x=1958, y=50,label="Invention of Pacemaker", size=3, color="black")+
   geom_text(x=1971, y=100, label="Invention of MRI and CT Scans", size=3, color="black")+
   theme_tufte()+
-  labs(Title="The Crime",
+  labs(title="The Crime",
+       subtitle="The Rate of Death from CVD Over Time by Country",
        x="Year",
-       y="Death Count from CVD per 100,000 People")
+       y="Death Count per 100,000 People",
+       color="Country")
 
 ```
+<div style="font-size: 20px;">
+Countries with the highest meat consumption also have the highest death rates from cardiovascular disease (CVD). The leading cause of death globally is CVD.
+</div>
 
-## Types of CVD
+## Meat and Health
+
+This is not shocking, though, as meat, especially red meat like beef, is high in saturated fat which can raise LDL cholesterol or the “bad” cholesterol (American Heart Association). LDL cholesterol is considered to be the “bad” cholesterol because it can build up plaque in and narrow the arteries, resulting in increased risk of heart problems. Although CVD rates have decreased over time, this can be attributed to advancements in medicine rather. What’s important is that countries with the highest meat consumption also have the highest rates of CVD. 
+
+
+## Meat and Health
 
 ```{r}
 url<-read.csv('https://ourworldindata.org/grapher/deaths-from-cardiovascular-disease-type.csv?v=1&csvType=full&useColumnShortNames=true')
@@ -166,8 +237,37 @@ ggplot(types_cvd_filter,
            fill=type_of_cvd))+
   geom_col()+
   coord_flip()+
-  labs(x="Death Count",
-       y="Type of CVD")+
+  labs(title="The Damage of CVD",
+       subtitle="Death Count by Type of CVD Worldwide, 2021",
+       x="Type of CVD",
+       y="Death Count",
+       fill="")+
   theme_bw()
 
 ```
+
+In 2021, the type of CVD that had the greatest death count worldwide was ischaemic heart disease.
+
+## Meat and Health
+
+<div style="font-size: 22px;">
+The American Heart Association describes ischaemic heart disease as “heart damage caused by narrow heart arteries that reduced blood and oxygen to the heart muscle”. So, there’s no doubt that high meat consumption, especially beef consumption, increases risk of CVD. And the most common type of CVD is caused by narrowing arteries which can occur when too much meat is consumed due to the saturated fat content. Meat, particularly red meat, is not meant to be consumed daily; however, culture has normalized overconsumption of meat. One of the most highly regarded diets, the mediterranean diet, allows for poultry and fish to be consumed a few times a week but only allows for red meats to be consumed a few times a month. Many European countries have adopted the Mediterranean diet as a product of cultural evolution in that region, and this is likely why most of these countries see lower rates of CVD compared to the United States which has a red-meat-loving diet culture. Meat is killing both the beating heart of the world as we know it and the hearts of people who likely aren’t sufficiently informed about the dangers of overconsuming meat.
+</div>
+
+## Closing the Case
+
+A better future can be achieved by just limiting meat consumption, especially red meat consumption. Food systems are a large contributor to global emissions. Future generations depend on our actions today: if climate trends persist, our children and grandchildren will have to navigate a world very different from the one we experienced. Ecosystems will be disrupted, access to resources will be scarce, and, eventually, death tolls would spike. The Earth could lose its ability to support humanity or any forms of life. Additionally, we create the culture today that will have great influence on future generations, including their diet culture. The devastation of CVD could be significantly limited if overconsumption of meat was less normalized. There’s potential to help save the world and save heart health by reducing meat consumption. Who will be a hero?
+
+## Resources
+
+[Meat Production,](https://ourworldindata.org/grapher/meat-production-tonnes.csv?v=1&csvType=full&useColumnShortNames=true)
+[Meat Consumption and GDP,](https://ourworldindata.org/grapher/meat-consumption-vs-gdp-per-capita.csv?v=1&csvType=full&useColumnShortNames=true)
+[Meat Consumption by Type,](https://ourworldindata.org/grapher/per-capita-meat-consumption-by-type-kilograms-per-year.csv?v=1&csvType=full&useColumnShortNames=true)
+[Carbon Emissions from Food Systems,](https://ourworldindata.org/grapher/emissions-from-food.csv?v=1&csvType=full&useColumnShortNames=true)
+[Death rate from cvd,](https://ourworldindata.org/grapher/cardiovascular-disease-death-rate-who-mdb.csv?v=1&csvType=full&useColumnShortNames=true)
+[University of Vermont Article,](https://www.uvm.edu/gund/news/cut-global-emissions-replace-meat-and-milk-plant-based-alternatives)
+[AHS Ischaemic Disease,](https://www.heart.org/en/health-topics/heart-attack/about-heart-attacks/silent-ischemia-and-ischemic-heart-disease)
+[AHD Saturated Fat,](https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/fats/saturated-fats)
+[USDA Beef Emmissions,](https://www.ars.usda.gov/news-events/news/research-news/2019/study-clarifies-us-beefs-resource-use-and-greenhouse-gas-emissions/)
+[Standford Study](https://woods.stanford.edu/news/meats-environmental-impact)
+
