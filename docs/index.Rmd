@@ -17,7 +17,9 @@ library(ggpubr)
 library(leaflet)
 library(tinytable)
 library(ggthemes)
+library(patchwork)
 ```
+
 
 ## Meat Production graph
 
@@ -28,21 +30,19 @@ meat_production<-url
 meat_prod_filter<-meat_production%>%
   filter(entity %in% c('United States','Canada','China','France','Germany','Brazil'))
 
-ggplot(meat_prod_filter,
+plot_1<-ggplot(meat_prod_filter,
        aes(x=year,
            y=meat__total__00001765__production__005510__tonnes,
            color=entity))+
   geom_path(size=0.75)+
   theme_tufte()+
-  labs(Title="The Origin Story",
+  labs(title="The Origin Story",
        x="Year",
        y="Meat Production (Tonnes)",
        color="Country")
 
 ```
 
-
-## Food Systems and Emmissions
 
 ```{r}
 url<-read.csv('https://ourworldindata.org/grapher/emissions-from-food.csv?v=1&csvType=full&useColumnShortNames=true')
@@ -51,15 +51,22 @@ food_carbon_filter<-food_carbon%>%
   filter(entity %in% c('United States','Canada','India','China','France','Germany','Brazil'))%>%
   filter(year == 2015)%>%
   mutate(entity=factor(entity,
-                       levels=c("China","United States","Brazil","India","Canada","Germany","France")))
-ggplot(food_carbon_filter,
+                       levels=c("China","United States","Brazil","Canada","Germany","France")))%>%
+  filter(!is.na(entity))
+plot_2<-ggplot(food_carbon_filter,
        aes(x=entity,
            y=greenhouse_gas_emissions_from_food))+
   geom_col(color="black",fill="black",width=0.75)+
-  theme_economist_white()+
+  theme(axis.title.y=element_text(size=8))+
   labs(title="Global Casualty",
        x="Country",
-       y="Greenhouse Gas Emmissions from Food (")
+       y="Greenhouse Gas Emmissions from Food (Kg CO2/1 Kg Food)")+
+  theme_test()
+
+```
+
+```{r, fig.width=12, fig.height=4, out.width="100%"}
+print(plot_1|plot_2)
 ```
 
 ## Meat Types
@@ -116,8 +123,51 @@ ggplot(cvd_death_filter,
   geom_vline(xintercept=1971)+
   geom_text(x=1958, y=50,label="Invention of Pacemaker", size=3, color="black")+
   geom_text(x=1971, y=100, label="Invention of MRI and CT Scans", size=3, color="black")+
-  theme_tufte()
+  theme_tufte()+
+  labs(Title="The Crime",
+       x="Year",
+       y="Death Count from CVD per 100,000 People")
 
 ```
 
+## Types of CVD
 
+```{r}
+url<-read.csv('https://ourworldindata.org/grapher/deaths-from-cardiovascular-disease-type.csv?v=1&csvType=full&useColumnShortNames=true')
+types_cvd<-url
+
+types_cvd_filter<-types_cvd%>%
+  filter(year == 2021)%>%
+  rename(rheumatic_disease=death_count__age_group_allages__sex_both_sexes__cause_rheumatic_heart_disease,
+         mycarditis=death_count__age_group_allages__sex_both_sexes__cause_cardiomyopathy__myocarditis__endocarditis,
+         circulatory_disease=death_count__age_group_allages__sex_both_sexes__cause_other_circulatory_diseases,
+         hypertensive_disease=death_count__age_group_allages__sex_both_sexes__cause_hypertensive_heart_disease,
+         ischaemic_stroke=death_count__age_group_allages__sex_both_sexes__cause_ischaemic_stroke,
+         haemorrhagic_stroke=death_count__age_group_allages__sex_both_sexes__cause_haemorrhagic_stroke,
+         ischaemic_disease=death_count__age_group_allages__sex_both_sexes__cause_ischaemic_heart_disease)%>%
+  pivot_longer(cols=rheumatic_disease:ischaemic_disease,
+              names_to="type_of_cvd",
+              values_to="death_count")
+types_cvd_filter$type_of_cvd<-factor(types_cvd_filter$type_of_cvd,
+                                     levels=c("ischaemic_disease",
+                                              "haemorrhagic_stroke",
+                                              "ischaemic_stroke",
+                                              "hypertensive_disease",
+                                              "cirulatory_disease",
+                                              "mycarditis",
+                                              "rheumatic_disease"))
+types_cvd_filter<-types_cvd_filter%>%
+  dplyr::filter(!is.na(type_of_cvd),
+                !is.na(death_count))
+
+ggplot(types_cvd_filter,
+       aes(x=type_of_cvd,
+           y=death_count,
+           fill=type_of_cvd))+
+  geom_col()+
+  coord_flip()+
+  labs(x="Death Count",
+       y="Type of CVD")+
+  theme_bw()
+
+```
